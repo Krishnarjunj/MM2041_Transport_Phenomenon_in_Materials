@@ -1,0 +1,74 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         10000;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   100;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+libs
+(
+	"libsfoces.so"
+);
+functions{
+forces
+{
+    type        forces;
+    functionObjectLibs ("libforces.so");
+    writeControl timeStep;
+    writeInterval 1;
+
+    patches     (obstacle);    // use your patch name here
+    rho         rhoInf;        // <-- Tells OpenFOAM to use constant rho
+    rhoInf      1;             // <-- Set density (assume 1 kg/m3 for air in simple cases)
+
+    CofR        (0 0 0);       // center of rotation
+    liftDir     (0 1 0);       // lift along y-axis
+    dragDir     (1 0 0);       // drag along x-axis
+    pitchAxis   (0 0 1);       // for moments (not needed now)
+    magUInf     1;             // free-stream velocity (adjust if needed)
+    lRef        1;             // reference length (like diameter of obstacle)
+    Aref        1;             // reference area (typically diameter * 1 for 2D)
+}
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
